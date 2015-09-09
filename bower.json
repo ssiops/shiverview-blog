@@ -1,0 +1,14 @@
+{
+  "name": "shiverview-blog",
+  "main": "index.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/ssiops/shiverview-blog",
+  "authors": [
+    "akasfei <akasfei@gmail.com>"
+  ],
+  "description": "Blog for project Shiverview",
+  "license": "MIT",
+  "dependencies": {
+    "ng-file-upload": "~7.0.0"
+  }
+}

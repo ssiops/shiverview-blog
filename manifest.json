@@ -1,0 +1,27 @@
+{
+  "name": "shiverview-blog",
+  "desc": "Blog for project Shiverview.",
+  "path": "/blog",
+  "static": "static",
+  "ui": {
+    "icon": "favicon.png",
+    "navName": "Blog",
+    "drawerName": "Blog",
+    "index": 1,
+    "views": {
+      "/": {"scope": "everyone", "title": "Latest", "url": "/views/index.html", "ctrl": "blogHomeCtrl"},
+      "/archive": {"scope": "everyone", "title": "Archive", "url": "/views/archive.html", "ctrl": "blogArchiveCtrl"},
+      "/archive/:title": {"scope": "everyone", "url": "/views/view.html", "ctrl": "blogViewCtrl"},
+      "/edit/:title": {"scope": "admin", "title": "Editor", "url": "/views/edit.html", "ctrl": "blogEditCtrl"}
+    },
+    "ngmod": ["ngFileUpload"],
+    "scripts": ["js/controller.js", "js/controller-edit.js"]
+  },
+  "privileges": {
+    "database": "sv-blog"
+  },
+  "dependencies": {
+    "shiverview-core-ui": "*",
+    "shiverview-core-users": "*"
+  }
+}
