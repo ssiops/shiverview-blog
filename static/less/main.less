@@ -1,0 +1,17 @@
+@comment-border-color: rgba(255, 255, 255, .25);
+
+.article-comment {
+  border: 1px solid @comment-border-color;
+  border-top: none;
+  & :first-of-type {
+    border-top: 1px solid @comment-border-color;
+  }
+}
+
+.article-comment-editor > textarea {
+  width: 100%;
+}
+
+.article-comment-util {
+  opacity: .5;
+}

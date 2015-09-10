@@ -9,13 +9,13 @@
     "drawerName": "Blog",
     "index": 1,
     "views": {
-      "/": {"scope": "everyone", "title": "Latest", "url": "/views/index.html", "ctrl": "blogHomeCtrl"},
-      "/archive": {"scope": "everyone", "title": "Archive", "url": "/views/archive.html", "ctrl": "blogArchiveCtrl"},
-      "/archive/:title": {"scope": "everyone", "url": "/views/view.html", "ctrl": "blogViewCtrl"},
+      "/archive/": {"scope": "everyone", "title": "Archive", "url": "/views/index.html", "ctrl": "blogArchiveCtrl"},
+      "/archive/:expression": {"scope": "everyone", "url": "/views/index.html", "ctrl": "blogArchiveCtrl"},
       "/edit/:title": {"scope": "admin", "title": "Editor", "url": "/views/edit.html", "ctrl": "blogEditCtrl"}
     },
     "ngmod": ["ngFileUpload"],
-    "scripts": ["js/controller.js", "js/controller-edit.js"]
+    "scripts": ["js/controller.js", "js/controller-edit.js"],
+    "less": "less/main.less"
   },
   "privileges": {
     "database": "sv-blog"

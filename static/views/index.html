@@ -1,10 +1,80 @@
 <div class="container top-spaced">
   <div class="row">
     <div class="col-md-9">
-
+      <div class="card" ng-repeat="article in articles">
+        <div class="cover">
+          <img alt="Cover image" ng-src="{{article.cover || '/blog/images/default-cover.svg'}}">
+          <div class="caption">
+            <h3>{{article.displayTitle}}</h3>
+            <h5>{{article.abstract}}</h5>
+            <p>{{article.date | date:'HH:mm MMM ddd yyyy'}}</p>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="article-content">
+            <btf-markdown>
+{{article.content}}
+            </btf-markdown>
+          </div>
+          <p class="right-aligned">
+            <button class="btn btn-link" ng-click="toggleComments(article)"><span class="glyphicon glyphicon-comment"></span> {{article.comments.length || ''}}</button>
+          </p>
+          <div class="article-comments" ng-show="article.showComments">
+            <div class="article-comment" ng-show="user">
+              <div class="col-xs-1">
+                <img alt="User profile image" ng-src="{{user.profileimg || '/users/images/default.svg'}}">
+              </div>
+              <form class="col-xs-11 article-comment-editor">
+                <textarea placeholder="Say something..." ng-model="newComment.content" rows="3"></textarea>
+                <p class="right-aligned">
+                  <button type="reset" class="btn btn-default">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Comment</button>
+                </p>
+              </form>
+            </div>
+            <div class="article-comment" ng-repeat="comment in article.comments">
+              <div class="col-xs-1">
+                <img alt="User profile image" ng-src="{{comment.user.profileimg || '/users/images/default.svg'}}">
+              </div>
+              <div class="col-xs-11 article-comment-content" ng-hide="comment.editing">
+                <h5>{{comment.user.displayName || comment.author}} <span class="subtle">{{comment.date | date:'HH:mm MMM ddd yyyy'}}</span></h5>
+                <p>{{comment.content}}</p>
+                <p class="article-comment-util right-aligned" ng-if="user.name==comment.author||user.admin">
+                  <button class="btn btn-xs btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
+                  <button class="btn btn-xs btn-link"><span class="glyphicon glyphicon-remove"></span></button>
+                </p>
+              </div>
+              <form class="col-xs-11 article-comment-editor" ng-show="comment.editing">
+                <textarea placeholder="Say something..." ng-model="comment.edit" rows="3"></textarea>
+                <p class="right-aligned">
+                  <button type="reset" class="btn btn-default" ng-click="comment.editing=false">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Edit</button>
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="col-md-3">
-      
+      <div class="card">
+        <div class="cover">
+          <img alt="Label cover" ng-src="{{filter.label.cover || '/blog/images/default-label.svg'}}">
+          <h5 class="caption"><a href ng-click="activeLabelFilter=!activeLabelFilter">{{filter.label.title || 'Labels'}} <span class="glyphicon pull-right" ng-class="{'glyphicon-menu-down':!activeLabelFilter,'glyphicon-menu-up':activeLabelFilter}"></span></a></h5>
+        </div>
+        <div class="card-content" ng-show="activeLabelFilter">
+          <span class="label label-default" ng-repeat="label in labels" ng-style="label.style" ng-click="filter.label=label" tooltip="{{label.desc || label.title}}" tooltip-placement="bottom">{{label.title}}</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cover">
+          <img alt="Calendar cover" ng-src="{{'/blog/images/default-cover-'+(filter.date?filter.date.getMonth():'0')+'.svg'}}">
+          <h5 class="caption"><a href ng-click="activeDateFilter=!activeDateFilter">{{(filter.date | date: 'MMM yyyy' )|| 'Archive'}} <span class="glyphicon pull-right" ng-class="{'glyphicon-menu-down':!activeDateFilter,'glyphicon-menu-up':activeDateFilter}"></span></a></h5>
+        </div>
+        <div class="card-content" ng-show="activeDateFilter">
+
+        </div>
+      </div>
     </div>
   </div>
 </div>
