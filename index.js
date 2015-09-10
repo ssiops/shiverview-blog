@@ -12,8 +12,24 @@ function App() {
 
 var app = new App();
 
-//App.prototype.init = function (srv, callback) {
-//  callback();
-}//;
+App.prototype.init = function (srv, callback) {
+  if (process.env.verbose) console.log('Checking archive and label indexes.');
+  srv.db.index([
+    {
+      coll: 'archive',
+      index: 'title',
+      options: {unique: true}
+    },
+    {
+      coll: 'labels',
+      index: 'title',
+      options: {unique: true}
+    }
+  ]).then(function () {
+    callback();
+  }, function (err) {
+    callback(err);
+  });
+};
 
 module.exports = app;

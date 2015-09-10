@@ -1,2 +1,2 @@
 module.exports = require('./routes/archive.js')
-.concat(require('./routes/edit.js'));
+.concat(require('./routes/comment.js'));
