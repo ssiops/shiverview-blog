@@ -1,21 +1,27 @@
 <div class="container top-spaced">
   <div class="row">
     <div class="col-md-9">
+      <div class="card" ng-if="articles.length<1">
+        <div class="cover">
+          <img src="/blog/images/error-cover.svg" alt="Oops, no articles found">
+          <div class="caption">
+            <h3>Oops, we can't find any articles.</h3>
+            <p>Please check back later.</p>
+          </div>
+        </div>
+      </div>
       <div class="card" ng-repeat="article in articles">
         <div class="cover">
           <img alt="Cover image" ng-src="{{article.cover || '/blog/images/default-cover.svg'}}">
           <div class="caption">
-            <h3>{{article.displayTitle}}</h3>
+            <h3><a href ng-href="#/blog/archive/{{article.title}}">{{article.displayTitle}}</a></h3>
             <h5>{{article.abstract}}</h5>
             <p>{{article.date | date:'HH:mm MMM ddd yyyy'}}</p>
+            <a href class="pull-right" ng-href="#/blog/edit/{{article.title}}" ng-if="user.admin"><span class="glyphicon glyphicon-pencil"></span></a>
           </div>
         </div>
         <div class="card-content">
-          <div class="article-content">
-            <btf-markdown>
-{{article.content}}
-            </btf-markdown>
-          </div>
+          <div class="article-content" ng-bind-html="markdown.render(article.content)"></div>
           <p class="right-aligned">
             <button class="btn btn-link" ng-click="toggleComments(article)"><span class="glyphicon glyphicon-comment"></span> {{article.comments.length || ''}}</button>
           </p>
