@@ -1,0 +1,106 @@
+<div class="container top-spaced">
+  <div class="row">
+    <div class="col-md-9">
+      <div class="card">
+        <h2 class="cover">Blog editor</h2>
+        <form class="card-content" name="editor" ng-submit="submit($event)">
+          <div class="form-group" ng-class="{'has-error':!editor.title.$valid&&titleBlurred}">
+            <input type="text" class="form-control" name="title" id="title" placeholder="Title" ng-model="payload.title" required ng-blur="titleBlurred=true">
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" name="abstract" id="abstract" placeholder="Abstract" ng-model="payload.abstract">
+          </div>
+          <div class="row">
+            <div class="col-xs-4" ng-repeat="label in selectedLabels">
+              <div class="card">
+                <div class="cover">
+                  <img alt="Label cover" ng-src="{{label.cover || '/blog/images/default-label.svg'}}">
+                  <h5 class="caption" tooltip="{{label.desc || label.title}}" tooltip-placement="bottom">{{label.title}} <a href class="pull-right" ng-click="selectedLabels.splice($index,1)"><span class="glyphicon glyphicon-remove"></span></a></h5>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="btn-toolbar">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default" ng-click="insertSymbol({wrap: '**'})"><span class="glyphicon glyphicon-bold"></span></button>
+                <button type="button" class="btn btn-default" ng-click="insertSymbol({wrap: '__'})"><span class="glyphicon glyphicon-italic"></span></button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-default" ng-click="insertSymbol({simple: '[<link text>](<href>)'})"><span class="glyphicon glyphicon-link"></span></button>
+                <button type="button" class="btn btn-default" ng-click="insertSymbol({home: '> '})"><span class="glyphicon glyphicon-comment"></span></button>
+                <button type="button" class="btn btn-default" ng-click="insertSymbol({wrap: '`'})"><span class="glyphicon glyphicon-stop"></span></button>
+                <button type="button" class="btn btn-default" ng-click="openUploader('editor')"><span class="glyphicon glyphicon-picture"></span></button>
+              </div>
+              <div class="btn-group">
+                <button type="button" class="btn btn-default" ng-click="insertSymbol({home: '* '})"><span class="glyphicon glyphicon-list"></span></button>
+                <button type="button" class="btn btn-default" ng-click="insertSymbol({home: '0. '})"><span class="glyphicon glyphicon-sort-by-order"></span></button>
+                <button type="button" class="btn btn-default" ng-click="insertSymbol({home: '# '})"><span class="glyphicon glyphicon-header"></span></button>
+                <button type="button" class="btn btn-default" ng-click="insertSymbol({line: '* * *'})"><span class="glyphicon glyphicon-minus"></span></button>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <textarea name="content" id="content" class="form-control editor-textarea" rows="24"></textarea>
+          </div>
+          <div class="form-group right-aligned">
+            <button type="submit" class="btn btn-primary">{{editing?'Update':'Submit'}}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card">
+        <div class="cover">
+          <img alt="Label cover" ng-src="{{selectedLabels[selectedLabels.length].cover || '/blog/images/default-label.svg'}}">
+          <h5 class="caption"><a href ng-click="activeLabelSelect=!activeLabelSelect">Labels <span class="glyphicon pull-right" ng-class="{'glyphicon-menu-down':!activeLabelSelect,'glyphicon-menu-up':activeLabelSelect}"></span></a></h5>
+        </div>
+        <div class="card-content" ng-show="activeLabelSelect">
+          <ul class="list-group label-group">
+            <li class="list-group-item" ng-repeat="label in labels">
+              <a href ng-style="label.style" ng-click="selectedLabels.push(label)" tooltip="{{label.desc || label.title}}" tooltip-placement="bottom">{{label.title}}</a>
+              <button class="btn btn-link btn-xs pull-right" ng-style="label.style" ng-click="editLabel($index)"><span class="glyphicon glyphicon-pencil"></span></button>
+            </li>
+          </ul>
+          <button class="btn btn-primary btn-sm btn-block" ng-click="editingLabel=!editingLabel">{{newLabel.edit?'Edit':'New'}} label <span class="glyphicon pull-right" ng-class="{'glyphicon-menu-down':!editingLabel,'glyphicon-menu-up':editingLabel}"></span></button>
+          <form class="top-spaced" ng-show="editingLabel" ng-submit="submitLabel($event)">
+            <a href class="thumbnail" ng-click="openUploader('label')"><img alt="Label cover" ng-src="{{newLabel.cover || '/blog/images/default-label.svg'}}"></a>
+            <div class="form-group">
+              <input type="text" class="form-control input-sm" placeholder="Label title" ng-model="newLabel.title">
+            </div>
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon" ng-style="newLabel.style"><span class="glyphicon glyphicon-text-background"></span></span>
+                <input type="text" class="form-control input-sm" placeholder="Label color" ng-model="newLabel.style['background-color']">
+              </div>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control input-sm" placeholder="Label description" ng-model="newLabel.desc">
+            </div>
+            <p>
+              <button type="submit" class="btn btn-primary btn-sm">{{newLabel.edit?'Edit':'Submit'}}</button>
+              <button type="reset" class="btn btn-default btn-sm" ng-click="newLabel={};editingLabel=false">Cancel</button>
+              <button type="button" class="btn btn-danger btn-sm" ng-click="deleteLabel(newLabel.title)" ng-class="{'disabled': !newLabel.edit}">Delete</button>
+            </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/ng-template" id="imgUpload.html">
+<div class="modal-header">
+  <h3>Image upload</h3>
+</div>
+<div class="modal-body">
+  <div class="file-drop-zone" ngf-select="upload($file)" ngf-drop="upload($file)" accept="'image/*'" ngf-drag-over-class="active">
+    <h3>Drag a photo here</h3>
+    <p>- or -</p>
+    <button type="button" class="btn btn-default">Select File</button>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+</div>
+</script>

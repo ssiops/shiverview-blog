@@ -11,7 +11,8 @@
     "views": {
       "/archive/": {"scope": "everyone", "title": "Archive", "url": "/views/index.html", "ctrl": "blogArchiveCtrl"},
       "/archive/:expression": {"scope": "everyone", "url": "/views/index.html", "ctrl": "blogArchiveCtrl"},
-      "/edit/:title": {"scope": "admin", "title": "Editor", "url": "/views/edit.html", "ctrl": "blogEditCtrl"}
+      "/edit/": {"scope": "admin", "title": "Editor", "url": "/views/edit.html", "ctrl": "blogEditCtrl"},
+      "/edit/:title": {"scope": "admin", "url": "/views/edit.html", "ctrl": "blogEditCtrl"}
     },
     "ngmod": ["ngFileUpload"],
     "scripts": ["js/controller.js", "js/controller-edit.js"],
