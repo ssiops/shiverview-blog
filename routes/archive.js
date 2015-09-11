@@ -67,7 +67,7 @@ module.exports = [
     handler: function (req, res, srv, next) {
       if (!req.session.user || !req.session.user.admin)
         return res.status(403).send();
-      srv.db.delete({title: req.params.title}, 'archive', {limit: 1})
+      srv.db.remove({title: req.params.title}, 'archive', {limit: 1})
       .then(function () {
         res.status(204).send();
       }, function (err) {
@@ -76,7 +76,7 @@ module.exports = [
     }
   },
   {
-    url: '/archive/label',
+    url: '/labels',
     method: 'get',
     handler: function (req, res, srv, next) {
       srv.db.find({}, 'labels', {})
@@ -88,7 +88,7 @@ module.exports = [
     }
   },
   {
-    url: '/archive/label/:title',
+    url: '/labels/:title',
     method: 'post',
     handler: function (req, res, srv, next) {
       if (!req.session.user || !req.session.user.admin)
@@ -104,13 +104,13 @@ module.exports = [
     }
   },
   {
-    url: '/archive/label/:title',
+    url: '/labels/:title',
     method: 'put',
     handler: function (req, res, srv, next) {
       if (!req.session.user || !req.session.user.admin)
         return res.status(403).send();
       var doc = req.body;
-      srv.db.insert({title: req.params.title}, {$set: doc}, 'labels', {})
+      srv.db.update({title: req.params.title}, {$set: doc}, 'labels', {})
       .then(function () {
         res.status(204).send();
       }, function (err) {
@@ -119,12 +119,12 @@ module.exports = [
     }
   },
   {
-    url: '/archive/label/:title',
+    url: '/labels/:title',
     method: 'delete',
     handler: function (req, res, srv, next) {
       if (!req.session.user || !req.session.user.admin)
         return res.status(403).send();
-      srv.db.delete({title: req.params.title}, 'labels', {limit: 1})
+      srv.db.remove({title: req.params.title}, 'labels', {limit: 1})
       .then(function () {
         res.status(204).send();
       }, function (err) {
