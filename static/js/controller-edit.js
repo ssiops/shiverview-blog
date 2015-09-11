@@ -3,6 +3,7 @@ angular.module('shiverview')
 .controller('blogEditCtrl', ['$scope', '$http', '$window', '$location', '$modal', '$rootScope', '$routeParams', 'markdown', function ($scope, $http, $window, $location, $modal, $rootScope, $params, markdown) {
   $scope.payload = {
     title: '',
+    displayTitle: '',
     abstract: '',
     content: ''
   };
@@ -17,6 +18,8 @@ angular.module('shiverview')
         method: 'get'
       }).then(function (res) {
         $scope.payload = res.data;
+        $scope.payload.title = $scope.payload.displayTitle;
+        $scope.textarea.value = $scope.payload.content;
       }, function (res) {
         if (res.status == 404)
           $location.url('/blog/edit/');
@@ -70,20 +73,24 @@ angular.module('shiverview')
     });
     modalInstance.result.then(function (src) {
       if (context == 'editor')
-        $scope.insert({simple: '![<alt text>](' + src + ')'});
+        $scope.insertSymbol({simple: '![<alt text>](' + src + ')'});
       else if (context == 'label')
         $scope.newLabel.cover = src;
+      else if (context == 'cover')
+        $scope.payload.cover = src;
     }, function () {
     });
   };
   $scope.submit = function (e) {
     if (e) e.preventDefault();
     var d = new Date();
-    $scope.payload.displayTitle = $scope.payload.title;
-    $scope.payload.title = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + $scope.payload.title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+    if (!/^[0-9]{4}-[0-9]{2}-\w+$/g.test($scope.payload.title))
+      $scope.payload.title = d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + $scope.payload.displayTitle.replace(/[^a-zA-Z0-9]+$/g, '').replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase();
     $scope.payload.labels = $scope.selectedLabels.map(function (label) {
       return label.title;
     });
+    if (!$scope.payload.date)
+      $scope.payload.date = d.getTime();
     $scope.payload.content = $scope.textarea.value;
     $http({
       url: '/blog/archive/' + $scope.payload.title,

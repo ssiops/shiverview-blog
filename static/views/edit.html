@@ -2,10 +2,15 @@
   <div class="row">
     <div class="col-md-9">
       <div class="card">
-        <h2 class="cover">Blog editor</h2>
+        <div class="cover">
+          <img alt="Article cover" ng-src="{{payload.cover || '/blog/images/default-cover.svg'}}">
+          <div class="caption">
+            <h2 class="cover">{{payload.title || 'Blog editor'}} <a href class="pull-right" ng-click="openUploader('cover')"><span class="glyphicon glyphicon-picture"></span></a></h2>
+          </div>
+        </div>
         <form class="card-content" name="editor" ng-hide="preview" ng-submit="submit($event)">
           <div class="form-group" ng-class="{'has-error':!editor.title.$valid&&titleBlurred}">
-            <input type="text" class="form-control" name="title" id="title" placeholder="Title" ng-model="payload.title" required ng-blur="titleBlurred=true">
+            <input type="text" class="form-control" name="title" id="title" placeholder="Title" ng-model="payload.displayTitle" required ng-blur="titleBlurred=true">
           </div>
           <div class="form-group">
             <input type="text" class="form-control" name="abstract" id="abstract" placeholder="Abstract" ng-model="payload.abstract">
