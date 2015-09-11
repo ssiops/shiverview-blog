@@ -3,7 +3,7 @@
     <div class="col-md-9">
       <div class="card">
         <h2 class="cover">Blog editor</h2>
-        <form class="card-content" name="editor" ng-submit="submit($event)">
+        <form class="card-content" name="editor" ng-hide="preview" ng-submit="submit($event)">
           <div class="form-group" ng-class="{'has-error':!editor.title.$valid&&titleBlurred}">
             <input type="text" class="form-control" name="title" id="title" placeholder="Title" ng-model="payload.title" required ng-blur="titleBlurred=true">
           </div>
@@ -44,9 +44,14 @@
             <textarea name="content" id="content" class="form-control editor-textarea" rows="24"></textarea>
           </div>
           <div class="form-group right-aligned">
+            <button type="button" class="btn btn-info" ng-click="preview=markdown.render(textarea.value)">Preview</button>
             <button type="submit" class="btn btn-primary">{{editing?'Update':'Submit'}}</button>
           </div>
         </form>
+        <div class="card-content" ng-show="preview">
+          <button class="btn btn-default pull-right" ng-click="preview=false">Edit</button>
+          <div ng-bind-html="preview"></div>
+        </div>
       </div>
     </div>
     <div class="col-md-3">

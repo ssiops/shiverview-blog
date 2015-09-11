@@ -1,6 +1,6 @@
 (function (angular) {
 angular.module('shiverview')
-.controller('blogEditCtrl', ['$scope', '$http', '$window', '$location', '$modal', '$rootScope', '$routeParams', function ($scope, $http, $window, $location, $modal, $rootScope, $params) {
+.controller('blogEditCtrl', ['$scope', '$http', '$window', '$location', '$modal', '$rootScope', '$routeParams', 'markdown', function ($scope, $http, $window, $location, $modal, $rootScope, $params, markdown) {
   $scope.payload = {
     title: '',
     abstract: '',
@@ -9,6 +9,7 @@ angular.module('shiverview')
   $scope.selectedLabels = [];
   $scope.newLabel = {};
   $scope.textarea = $window.document.getElementById('content');
+  $scope.markdown = markdown;
   $scope.retrieve = function () {
     if ($params.title) {
       $http({

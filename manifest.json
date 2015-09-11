@@ -14,8 +14,8 @@
       "/edit/": {"scope": "admin", "title": "Editor", "url": "/views/edit.html", "ctrl": "blogEditCtrl"},
       "/edit/:title": {"scope": "admin", "url": "/views/edit.html", "ctrl": "blogEditCtrl"}
     },
-    "ngmod": ["ngFileUpload"],
-    "scripts": ["js/controller.js", "js/controller-edit.js"],
+    "ngmod": ["ngFileUpload", "ngSanitize"],
+    "scripts": ["js/controller.js", "js/controller-edit.js", "js/service.js"],
     "less": "less/main.less"
   },
   "privileges": {
