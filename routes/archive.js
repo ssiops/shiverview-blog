@@ -5,7 +5,14 @@ module.exports = [
     handler: function (req, res, srv, next) {
       var query = {};
       var opt = {};
-      query.label = req.query.label || undefined;
+      if (req.query.label)
+        query.labels = req.query.label;
+      if (req.query.date) {
+        var date = req.query.date.split('-');
+        var d0 = new Date(date[0], date[1] + 1, 1);
+        var d1 = new Date(date[0], date[1] + 2, 1);
+        query.date = {$and: {$gte: d0.getTime(), $lte: d1.getTime()}};
+      }
       opt.limit = req.query.limit || 10;
       srv.db.find(query, 'archive', opt)
       .then(function (docs) {
@@ -53,7 +60,8 @@ module.exports = [
       if (!req.session.user || !req.session.user.admin)
         return res.status(403).send();
       var doc = req.body;
-      srv.db.insert({title: req.params.title}, {$set: doc}, 'archive', {})
+      delete doc._id;
+      srv.db.update({title: req.params.title}, {$set: doc}, 'archive', {})
       .then(function () {
         res.status(204).send();
       }, function (err) {
