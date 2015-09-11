@@ -1,11 +1,7 @@
-@comment-border-color: rgba(255, 255, 255, .25);
+@separator-border-color: rgba(255, 255, 255, .25);
 
 .article-comment {
-  border: 1px solid @comment-border-color;
-  border-top: none;
-  & :first-of-type {
-    border-top: 1px solid @comment-border-color;
-  }
+  border: 1px solid @separator-border-color;
 }
 
 .article-comment-editor > textarea {
@@ -18,8 +14,28 @@
 
 .label-group > .list-group-item {
   padding: 8px 12px;
+  color: #333;
+  border: none;
+  border-bottom: 1px solid @separator-border-color;
+  & > a {
+    color: #333;
+  }
+  &:last-child {
+    border: none;
+  }
 }
 
 .editor-textarea {
   font-family: "Roboto Mono", "Consolas", "Courier New", monospace;
+}
+
+.datepicker-container {
+  display: inline;
+  position: relative;
+  .datepicker {
+    position: absolute;
+    right: 0;
+    bottom: 16px;
+    padding: 8px;
+  }
 }

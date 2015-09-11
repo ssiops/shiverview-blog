@@ -13,6 +13,7 @@ angular.module('shiverview')
   $scope.markdown = markdown;
   $scope.retrieve = function () {
     if ($params.title) {
+      $scope.editing = true;
       $http({
         url: '/blog/archive/' + $params.title,
         method: 'get'
@@ -20,6 +21,8 @@ angular.module('shiverview')
         $scope.payload = res.data;
         $scope.payload.title = $scope.payload.displayTitle;
         $scope.textarea.value = $scope.payload.content;
+        if ($scope.payload.date)
+          $scope.payload.date = new Date($scope.payload.date);
       }, function (res) {
         if (res.status == 404)
           $location.url('/blog/edit/');
@@ -89,16 +92,20 @@ angular.module('shiverview')
     $scope.payload.labels = $scope.selectedLabels.map(function (label) {
       return label.title;
     });
-    if (!$scope.payload.date)
-      $scope.payload.date = d.getTime();
+    if ($scope.payload.date)
+      $scope.payload.date.setHours(d.getHours(), d.getMinutes(), d.getSeconds());
+    else
+      $scope.payload.date = d;
+    $scope.payload.date = $scope.payload.date.getTime();
     $scope.payload.content = $scope.textarea.value;
     $http({
       url: '/blog/archive/' + $scope.payload.title,
       data: $scope.payload,
-      method: 'post'
+      method: $scope.editing?'put':'post'
     }).then(function () {
       $location.url('/blog/archive/' + $scope.payload.title);
     }, function (res) {
+      $scope.payload.date = new Date($scope.payload.date);
       $rootScope.$broadcast('errorMessage', res.data.message);
     });
   };

@@ -4,9 +4,7 @@
       <div class="card">
         <div class="cover">
           <img alt="Article cover" ng-src="{{payload.cover || '/blog/images/default-cover.svg'}}">
-          <div class="caption">
-            <h2 class="cover">{{payload.title || 'Blog editor'}} <a href class="pull-right" ng-click="openUploader('cover')"><span class="glyphicon glyphicon-picture"></span></a></h2>
-          </div>
+          <h2 class="caption">{{payload.displayTitle || 'Blog editor'}} <a href class="pull-right" ng-click="openUploader('cover')"><span class="glyphicon glyphicon-picture"></span></a></h2>
         </div>
         <form class="card-content" name="editor" ng-hide="preview" ng-submit="submit($event)">
           <div class="form-group" ng-class="{'has-error':!editor.title.$valid&&titleBlurred}">
@@ -49,8 +47,12 @@
             <textarea name="content" id="content" class="form-control editor-textarea" rows="24"></textarea>
           </div>
           <div class="form-group right-aligned">
+            <button type="button" class="btn btn-default" ng-click="datepicker=!datepicker"><span class="glyphicon glyphicon-calendar"></span> {{payload.date | date: yyyy-MM-dd}}</button>
             <button type="button" class="btn btn-info" ng-click="preview=markdown.render(textarea.value)">Preview</button>
             <button type="submit" class="btn btn-primary">{{editing?'Update':'Submit'}}</button>
+            <div class="datepicker-container">
+              <datepicker class="datepicker card" ng-model="payload.date" show-weeks="true" ng-show="datepicker"></datepicker>
+            </div>
           </div>
         </form>
         <div class="card-content" ng-show="preview">
