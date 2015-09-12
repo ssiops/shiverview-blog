@@ -1,10 +1,15 @@
 (function (angular) {
 angular.module('shiverview')
-.controller('blogArchiveCtrl', ['$scope', '$http', '$routeParams', 'user', 'markdown', function ($scope, $http, $params, user, markdown) {
-  $scope.articles = [];
+.controller('blogArchiveCtrl', ['$scope', '$http', '$routeParams', '$location', '$filter', '$rootScope', 'user', 'markdown', function ($scope, $http, $params, $location, $filter, $rootScope, user, markdown) {
   $scope.user = user.get();
+  if (typeof $scope.user.then === 'function')
+    $scope.user.then(function () { $scope.user = user.get(); });
+  $scope.articles = [];
   $scope.markdown = markdown;
   $scope.params = $params;
+  $scope.query = {};
+  $scope.filter = {};
+  $scope.calendar = [];
   $scope.parse = function () {
     if ($params.expression) {
       var patterns = {
@@ -14,17 +19,14 @@ angular.module('shiverview')
       }
       if (patterns.title.test($params.expression))
         return $scope.retrieve($params.expression);
-      var query = {};
       var label;
       var date;
       if (label = patterns.label.exec($params.expression))
-        query.label = label[0].split(':')[1];
+        $scope.query.label = label[0].split(':')[1];
       if (date = patterns.date.exec($params.expression))
-        query.date = date[0].split(':')[1];
-      $scope.retrieve(query);
-    } else {
-      $scope.retrieve({});
+        $scope.query.date = date[0].split(':')[1];
     }
+    $scope.retrieve($scope.query);
   };
   $scope.retrieve = function (query) {
     var url = '/blog/archive/';
@@ -48,6 +50,25 @@ angular.module('shiverview')
       $rootScope.$broadcast('errorMessage', res.data.message);
     });
   };
+  $scope.remove = function (article) {
+    if (!$scope.user.admin)
+      return;
+    if (article.removing) {
+      $http({
+        url: '/blog/archive/' + article.title,
+        method: 'delete'
+      }).then(function () {
+        if (typeof $scope.query === 'string')
+          $location.url('/blog');
+        else
+          $scope.retrieve($scope.query);
+      }, function (res) {
+        $rootScope.$broadcast('errorMessage', res.data.message);
+      });
+    } else {
+      article.removing = true;
+    }
+  };
   $scope.retrieveComments = function (article) {
     $http({
       url: '/blog/archive/' + article.title + '/comments',
@@ -58,7 +79,49 @@ angular.module('shiverview')
       $rootScope.$broadcast('errorMessage', res.data.message);
     });
   };
+  $scope.retrieveLabels = function () {
+    $http({
+      url: '/blog/labels',
+      method: 'get'
+    }).then(function (res) {
+      $scope.labels = res.data;
+      // TODO: detect label.style.background-color and change text color
+      if ($scope.query.label) {
+        for (var i = 0; i < $scope.labels.length; i++) {
+          if ($scope.labels[i].title == $scope.query.label) {
+            $scope.filter.label = $scope.labels[i];
+            break;
+          }
+        }
+      }
+    }, function (res) {
+      $rootScope.$broadcast('errorMessage', res.data.message);
+    });
+  };
+  $scope.generateCalendar = function () {
+    var now = new Date();
+    var n = now.getFullYear();
+    for (var d = new Date(); d.getFullYear() > 2013; d.setMonth(d.getMonth() - 1)) {
+      y = d.getFullYear();
+      if (typeof $scope.calendar[n - y] === 'undefined')
+        $scope.calendar.push({year: y, months: []});
+      $scope.calendar[n - y].months.unshift({
+        month: ('0' + (d.getMonth() + 1)).slice(-2),
+        name: $filter('date')(d, 'MMM')
+      });
+    }
+  };
+  $scope.updateQuery = function (query) {
+    for (var i in query)
+      $scope.query[i] = query[i];
+    var newQuery = [];
+    for (var key in $scope.query)
+      newQuery.push(key + ':' + $scope.query[key]);
+    $location.url('/blog/archive/' + newQuery.join('+'));
+  };
 
   $scope.parse();
+  $scope.retrieveLabels();
+  $scope.generateCalendar();
 }]);
 })(window.angular);

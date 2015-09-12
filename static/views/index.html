@@ -16,8 +16,11 @@
           <div class="caption">
             <h3><a href ng-href="#/blog/archive/{{article.title}}">{{article.displayTitle}}</a></h3>
             <h5>{{article.abstract}}</h5>
-            <p>{{article.date | date:'HH:mm MMM ddd yyyy'}}</p>
-            <a href class="pull-right" ng-href="#/blog/edit/{{article.title}}" ng-if="user.admin"><span class="glyphicon glyphicon-pencil"></span></a>
+            <p class="pull-right">
+              <a href class="btn btn-link btn-xs" ng-href="#/blog/edit/{{article.title}}" ng-if="user.admin"><span class="glyphicon glyphicon-pencil"></span></a>
+              <a href class="btn btn-link btn-xs" ng-click="remove(article)" ng-if="user.admin"><span class="glyphicon" ng-class="{'glyphicon-trash': !article.removing, 'glyphicon-remove': article.removing}"></span></a>
+            </p>
+            <p>{{article.date | date:"@HHmm'hrs', MMM dd yyyy"}}</p>
           </div>
         </div>
         <div class="card-content">
@@ -69,16 +72,24 @@
           <h5 class="caption"><a href ng-click="activeLabelFilter=!activeLabelFilter">{{filter.label.title || 'Labels'}} <span class="glyphicon pull-right" ng-class="{'glyphicon-menu-down':!activeLabelFilter,'glyphicon-menu-up':activeLabelFilter}"></span></a></h5>
         </div>
         <div class="card-content" ng-show="activeLabelFilter">
-          <span class="label label-default" ng-repeat="label in labels" ng-style="label.style" ng-click="filter.label=label" tooltip="{{label.desc || label.title}}" tooltip-placement="bottom">{{label.title}}</span>
+          <ul class="list-group label-group">
+            <a href class="list-group-item" ng-repeat="label in labels" ng-style="label.style" ng-click="updateQuery({label:label.title})" tooltip="{{label.desc || label.title}}" tooltip-placement="bottom">{{label.title}}</a>
+          </ul>
         </div>
       </div>
       <div class="card">
         <div class="cover">
-          <img alt="Calendar cover" ng-src="{{'/blog/images/default-cover-'+(filter.date?filter.date.getMonth():'0')+'.svg'}}">
+          <img alt="Calendar cover" ng-src="{{'/blog/images/default-cover-'+(query.date?query.date.slice(-2):'00')+'.svg'}}">
           <h5 class="caption"><a href ng-click="activeDateFilter=!activeDateFilter">{{(filter.date | date: 'MMM yyyy' )|| 'Archive'}} <span class="glyphicon pull-right" ng-class="{'glyphicon-menu-down':!activeDateFilter,'glyphicon-menu-up':activeDateFilter}"></span></a></h5>
         </div>
         <div class="card-content" ng-show="activeDateFilter">
-
+          <accordion close-others="true">
+            <accordion-group ng-repeat="year in calendar" heading="{{year.year}}">
+              <div class="row">
+                <div class="col-xs-4" ng-repeat="month in year.months"><a href class="text-uppercase" ng-click="updateQuery({date:year.year+'-'+month.month})">{{month.name}}</a></div>
+              </div>
+            </accordion-group>
+          </accordion>
         </div>
       </div>
     </div>

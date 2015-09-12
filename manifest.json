@@ -9,7 +9,8 @@
     "drawerName": "Blog",
     "index": 1,
     "views": {
-      "/archive/": {"scope": "everyone", "title": "Archive", "url": "/views/index.html", "ctrl": "blogArchiveCtrl"},
+      "/": {"scope": "everyone", "title": "Archive", "url": "/views/index.html", "ctrl": "blogArchiveCtrl"},
+      "/archive/": {"scope": "everyone", "url": "/views/index.html", "ctrl": "blogArchiveCtrl"},
       "/archive/:expression": {"scope": "everyone", "url": "/views/index.html", "ctrl": "blogArchiveCtrl"},
       "/edit/": {"scope": "admin", "title": "Editor", "url": "/views/edit.html", "ctrl": "blogEditCtrl"},
       "/edit/:title": {"scope": "admin", "url": "/views/edit.html", "ctrl": "blogEditCtrl"}
