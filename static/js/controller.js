@@ -99,17 +99,43 @@ angular.module('shiverview')
     });
   };
   $scope.generateCalendar = function () {
-    var now = new Date();
-    var n = now.getFullYear();
-    for (var d = new Date(); d.getFullYear() > 2013; d.setMonth(d.getMonth() - 1)) {
-      y = d.getFullYear();
-      if (typeof $scope.calendar[n - y] === 'undefined')
-        $scope.calendar.push({year: y, months: []});
-      $scope.calendar[n - y].months.unshift({
-        month: ('0' + (d.getMonth() + 1)).slice(-2),
-        name: $filter('date')(d, 'MMM')
-      });
-    }
+    $http({
+      url: '/blog/archive',
+      params: {
+        reverse: true,
+        limit: 1
+      },
+      method: 'get'
+    }).then(function (res) {
+      var old;
+      if (res.data.length < 1)
+        old = new Date()
+      else
+        old = new Date(res.data[0].date)
+      var d = new Date();
+      var n = d.getFullYear();
+      var y;
+      while (d.getTime() > old.getTime()) {
+        y = d.getFullYear();
+        if (typeof $scope.calendar[n - y] === 'undefined')
+          $scope.calendar.push({year: y, months: []});
+        $scope.calendar[n - y].months.unshift({
+          month: ('0' + (d.getMonth() + 1)).slice(-2),
+          name: $filter('date')(d, 'MMM')
+        });
+        d.setMonth(d.getMonth() - 1);
+      }
+      if (d.getMonth() == old.getMonth()) {
+        if (typeof $scope.calendar[n - y] === 'undefined')
+          $scope.calendar.push({year: y, months: []});
+        $scope.calendar[n - y].months.unshift({
+          month: ('0' + (d.getMonth() + 1)).slice(-2),
+          name: $filter('date')(d, 'MMM')
+        });
+      }
+    }, function (res) {
+      $rootScope.$broadcast('errorMessage', res.data.message);
+    });
   };
   $scope.updateQuery = function (query) {
     for (var i in query)
