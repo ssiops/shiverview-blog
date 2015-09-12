@@ -4,7 +4,7 @@ module.exports = [
     method: 'get',
     handler: function (req, res, srv, next) {
       var query = {};
-      var opt = {};
+      var opt = {sort: [['date', -1]]};
       if (req.query.label)
         query.labels = req.query.label;
       if (req.query.date) {
@@ -24,6 +24,8 @@ module.exports = [
         }
       }
       opt.limit = req.query.limit || 10;
+      if (req.query.reverse)
+        opt.sort = [['date', 1]];
       srv.db.find(query, 'archive', opt)
       .then(function (docs) {
         res.send(docs);

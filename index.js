@@ -21,6 +21,11 @@ App.prototype.init = function (srv, callback) {
       options: {unique: true}
     },
     {
+      coll: 'archive',
+      index: 'date',
+      options: {}
+    },
+    {
       coll: 'labels',
       index: 'title',
       options: {unique: true}
