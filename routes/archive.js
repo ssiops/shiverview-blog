@@ -9,9 +9,19 @@ module.exports = [
         query.labels = req.query.label;
       if (req.query.date) {
         var date = req.query.date.split('-');
-        var d0 = new Date(date[0], date[1] + 1, 1);
-        var d1 = new Date(date[0], date[1] + 2, 1);
-        query.date = {$and: {$gte: d0.getTime(), $lte: d1.getTime()}};
+        var d0 = new Date(date[0], date[1] - 1, 1);
+        var d1 = new Date(date[0], date[1], 1);
+        query['$and'] = [{date: {$gte: d0.getTime()}}, {date: {$lte: d1.getTime()}}];
+      }
+      if (query['$and']) {
+        for (var key in query) {
+          if (key !== '$and') {
+            var o = {};
+            o[key] = query[key];
+            query['$and'].push(o);
+            delete query[key];
+          }
+        }
       }
       opt.limit = req.query.limit || 10;
       srv.db.find(query, 'archive', opt)
