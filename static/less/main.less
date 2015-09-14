@@ -1,7 +1,8 @@
-@separator-border-color: rgba(255, 255, 255, .25);
+@separator-border-color: rgba(0, 0, 0, .25);
 
 .article-comment {
-  border: 1px solid @separator-border-color;
+  border-top: 1px solid @separator-border-color;
+  padding-top: 8px;
 }
 
 .article-comment-editor > textarea {
@@ -9,19 +10,15 @@
 }
 
 .article-comment-util {
-  opacity: .5;
+  opacity: .9;
 }
 
 .label-group > .list-group-item {
   padding: 8px 12px;
   color: #333;
   border: none;
-  border-bottom: 1px solid @separator-border-color;
   & > a {
     color: #333;
-  }
-  &:last-child {
-    border: none;
   }
 }
 
@@ -38,4 +35,9 @@
     bottom: 16px;
     padding: 8px;
   }
+}
+
+.comment-profileimg {
+  width: 54px;
+  height: 54px;
 }

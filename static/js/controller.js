@@ -41,8 +41,6 @@ angular.module('shiverview')
     }).then(function (res) {
       if (res.data instanceof Array) {
         $scope.articles = res.data;
-        //for (var i = 0; i < max(2, $scope.articles.length); i++)
-        //  $scope.retrieveComments($scope.articles[i]);
       } else {
         $scope.articles = [res.data];
       }
@@ -71,13 +69,71 @@ angular.module('shiverview')
   };
   $scope.retrieveComments = function (article) {
     $http({
-      url: '/blog/archive/' + article.title + '/comments',
+      url: '/blog/archive/' + article.title + '/comment',
       method: 'get'
     }).then(function (res) {
       article.comments = res.data;
+      for (var i = 0; i < article.comments.length; i++)
+        $scope.queryCommentAuthor(article.comments[i]);
     }, function (res) {
       $rootScope.$broadcast('errorMessage', res.data.message);
     });
+  };
+  $scope.autoRetrieveComments = function (article) {
+    if (!article.comments)
+      $scope.retrieveComments(article);
+  };
+  $scope.queryCommentAuthor = function (comment) {
+    user.query(comment.author)
+    .then(function (res) {
+      comment.user = res.data;
+    }, function (res) {
+      $rootScope.$broadcast('errorMessage', res.data.message);
+    });
+  };
+  $scope.submitComment = function (e, article) {
+    if (e) e.preventDefault();
+    $http({
+      url: '/blog/archive/' + article.title + '/comment',
+      data: {content: article.newComment},
+      method: 'post'
+    })
+    .then(function (res) {
+      article.newComment = '';
+      $scope.retrieveComments(article);
+    }, function (res) {
+      $rootScope.$broadcast('errorMessage', res.data.message);
+    });
+  };
+  $scope.updateComment = function (e, comment) {
+    if (e) e.preventDefault();
+    $http({
+      url: '/blog/archive/' + comment.origin + '/comment/' + comment._id,
+      data: {content: comment.edit},
+      method: 'put'
+    })
+    .then(function (res) {
+      comment.content = comment.edit;
+      comment.editing = false;
+      $rootScope.$broadcast('successMessage', 'Comment updated.');
+    }, function (res) {
+      $rootScope.$broadcast('errorMessage', res.data.message);
+    });
+  };
+  $scope.removeComment = function (comment, article) {
+    if (comment.removing) {
+      $http({
+        url: '/blog/archive/' + article.title + '/comment/' + comment._id,
+        method: 'delete'
+      }).then(function () {
+        $scope.retrieveComments(article);
+        $rootScope.$broadcast('successMessage', 'Comment removed.');
+      }, function (res) {
+        $rootScope.$broadcast('errorMessage', res.data.message);
+      });
+    } else {
+      comment.removing = true;
+    }
   };
   $scope.retrieveLabels = function () {
     $http({

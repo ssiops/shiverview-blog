@@ -10,7 +10,7 @@
           </div>
         </div>
       </div>
-      <div class="card" ng-repeat="article in articles">
+      <div class="card" ng-repeat="article in articles" ng-mouseenter="autoRetrieveComments(article)">
         <div class="cover">
           <img alt="Cover image" ng-src="{{article.cover || '/blog/images/default-cover.svg'}}">
           <div class="caption">
@@ -26,38 +26,46 @@
         <div class="card-content">
           <div class="article-content" ng-bind-html="markdown.render(article.content)"></div>
           <p class="right-aligned">
-            <button class="btn btn-link" ng-click="toggleComments(article)"><span class="glyphicon glyphicon-comment"></span> {{article.comments.length || ''}}</button>
+            <span class="pull-left" ng-if="article.labels.length>0">
+              <span class="glyphicon glyphicon-tag"></span>
+              <a href class="btn btn-link" ng-href="#/blog/archive/label:{{label}}" ng-repeat="label in article.labels">{{label}}</a>
+            </span>
+            <button class="btn btn-link" ng-click="article.showComments=!article.showComments"><span class="glyphicon glyphicon-comment"></span> {{article.comments.length || ''}}</button>
           </p>
           <div class="article-comments" ng-show="article.showComments">
-            <div class="article-comment" ng-show="user">
-              <div class="col-xs-1">
-                <img alt="User profile image" ng-src="{{user.profileimg || '/users/images/default.svg'}}">
+            <div class="article-comment media" ng-repeat="comment in article.comments">
+              <div class="media-left">
+                <img alt="User profile image" class="media-object comment-profileimg" title="{{comment.user.displayName || comment.author}}" ng-src="{{comment.user.profileimg || '/users/images/default.svg'}}">
               </div>
-              <form class="col-xs-11 article-comment-editor">
-                <textarea placeholder="Say something..." ng-model="newComment.content" rows="3"></textarea>
+              <div class="media-body article-comment-content" ng-hide="comment.editing">
+                <p class="article-comment-util pull-right" ng-if="user.name==comment.author||user.admin">
+                  <a href class="btn btn-link btn-xs" ng-click="comment.edit=comment.content;comment.editing=true"><span class="glyphicon glyphicon-pencil"></span></a>
+                  <a href class="btn btn-link btn-xs" ng-click="removeComment(comment, article)"><span class="glyphicon" ng-class="{'glyphicon-trash': !comment.removing, 'glyphicon-remove': comment.removing}"></span></a>
+                </p>
+                <h5 class="media-heading"><strong>{{comment.user.displayName || comment.author}}</strong> <small>{{comment.date | date:"@HHmm'hrs', MMM dd yyyy"}}</small></h5>
+                <p>{{comment.content}}</p>
+              </div>
+              <form class="media-body article-comment-editor" ng-show="comment.editing" ng-submit="updateComment($event, comment)">
+                <div class="form-group">
+                  <textarea class="form-control" placeholder="Say something..." ng-model="comment.edit" rows="2"></textarea>
+                </div>
                 <p class="right-aligned">
-                  <button type="reset" class="btn btn-default">Cancel</button>
-                  <button type="submit" class="btn btn-primary">Comment</button>
+                  <button type="reset" class="btn btn-default btn-xs" ng-click="comment.editing=false">Cancel</button>
+                  <button type="submit" class="btn btn-primary btn-xs">Edit</button>
                 </p>
               </form>
             </div>
-            <div class="article-comment" ng-repeat="comment in article.comments">
-              <div class="col-xs-1">
-                <img alt="User profile image" ng-src="{{comment.user.profileimg || '/users/images/default.svg'}}">
+            <div class="article-comment media" ng-show="user">
+              <div class="media-left">
+                <img alt="User profile image" class="media-object comment-profileimg" ng-src="{{user.profileimg || '/users/images/default.svg'}}">
               </div>
-              <div class="col-xs-11 article-comment-content" ng-hide="comment.editing">
-                <h5>{{comment.user.displayName || comment.author}} <span class="subtle">{{comment.date | date:'HH:mm MMM ddd yyyy'}}</span></h5>
-                <p>{{comment.content}}</p>
-                <p class="article-comment-util right-aligned" ng-if="user.name==comment.author||user.admin">
-                  <button class="btn btn-xs btn-link"><span class="glyphicon glyphicon-pencil"></span></button>
-                  <button class="btn btn-xs btn-link"><span class="glyphicon glyphicon-remove"></span></button>
-                </p>
-              </div>
-              <form class="col-xs-11 article-comment-editor" ng-show="comment.editing">
-                <textarea placeholder="Say something..." ng-model="comment.edit" rows="3"></textarea>
+              <form class="media-body article-comment-editor" ng-submit="submitComment($event, article)">
+                <div class="form-group">
+                  <textarea class="form-control" placeholder="Say something..." ng-model="article.newComment" rows="2" required></textarea>
+                </div>
                 <p class="right-aligned">
-                  <button type="reset" class="btn btn-default" ng-click="comment.editing=false">Cancel</button>
-                  <button type="submit" class="btn btn-primary">Edit</button>
+                  <button type="reset" class="btn btn-default">Clear</button>
+                  <button type="submit" class="btn btn-primary">Comment</button>
                 </p>
               </form>
             </div>
