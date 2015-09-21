@@ -15,16 +15,20 @@ angular.module('shiverview')
       var patterns = {
         title: /^[0-9]{4}-[0-9]{2}-[\w-]+$/g,
         label: /label:\w+/g,
-        date: /date:[0-9]{4}-[0-9]{2}/g
+        date: /date:[0-9]{4}-[0-9]{2}/g,
+        page: /page:[0-9]+/g
       }
       if (patterns.title.test($params.expression))
         return $scope.retrieve($params.expression);
       var label;
       var date;
+      var page;
       if (label = patterns.label.exec($params.expression))
         $scope.query.label = label[0].split(':')[1];
       if (date = patterns.date.exec($params.expression))
         $scope.query.date = date[0].split(':')[1];
+      if (page = patterns.page.exec($params.expression))
+        $scope.query.page = page[0].split(':')[1];
     }
     $scope.retrieve($scope.query);
   };

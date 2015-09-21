@@ -72,6 +72,11 @@
           </div>
         </div>
       </div>
+      <p class="center-aligned">
+        <button type="button" class="btn btn-link" ng-click="updateQuery({page:query.page-1})" ng-disabled="!query.page||query.page<2"><span class="glyphicon glyphicon-menu-left"></span></button>
+        <a href="#/blog" class="btn btn-link btn-lg"><span class="glyphicon glyphicon-home"></span></a>
+        <button type="button" class="btn btn-link" ng-click="query.page?updateQuery({page:query.page+1}):updateQuery({page:2})" ng-disabled="articles.length<5"><span class="glyphicon glyphicon-menu-right"></span></button>
+      </p>
     </div>
     <div class="col-md-3">
       <div class="card">

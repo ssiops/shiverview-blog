@@ -23,9 +23,11 @@ module.exports = [
           }
         }
       }
-      opt.limit = req.query.limit || 10;
+      opt.limit = req.query.limit || 5;
       if (req.query.reverse)
         opt.sort = [['date', 1]];
+      if (req.query.page > 0)
+        opt.range = [(req.query.page - 1) * 5, req.query.page * 5];
       srv.db.find(query, 'archive', opt)
       .then(function (docs) {
         res.send(docs);
