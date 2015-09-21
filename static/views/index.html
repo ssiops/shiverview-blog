@@ -77,18 +77,18 @@
       <div class="card">
         <div class="cover">
           <img alt="Label cover" ng-src="{{filter.label.cover || '/blog/images/default-label.svg'}}">
-          <h5 class="caption"><a href ng-click="activeLabelFilter=!activeLabelFilter">{{filter.label.title || 'Labels'}} <span class="glyphicon pull-right" ng-class="{'glyphicon-menu-down':!activeLabelFilter,'glyphicon-menu-up':activeLabelFilter}"></span></a></h5>
+          <h5 class="caption"><a href ng-click="activeLabelFilter=!activeLabelFilter"><span class="glyphicon glyphicon-tag"></span>&nbsp; {{filter.label.title || 'Labels'}} <span class="glyphicon pull-right" ng-class="{'glyphicon-menu-down':!activeLabelFilter,'glyphicon-menu-up':activeLabelFilter}"></span></a></h5>
         </div>
         <div class="card-content" ng-show="activeLabelFilter">
           <ul class="list-group label-group">
-            <a href class="list-group-item" ng-repeat="label in labels" ng-style="label.style" ng-click="updateQuery({label:label.title})" tooltip="{{label.desc || label.title}}" tooltip-placement="bottom">{{label.title}}</a>
+            <a href class="list-group-item" ng-repeat="label in labels" ng-style="label.style" ng-click="updateQuery({label:label.title})" tooltip="{{label.desc || label.title}}" tooltip-placement="top">{{label.title}}</a>
           </ul>
         </div>
       </div>
       <div class="card">
         <div class="cover">
           <img alt="Calendar cover" ng-src="{{'/blog/images/default-cover-'+(query.date?query.date.slice(-2):'00')+'.svg'}}">
-          <h5 class="caption"><a href ng-click="activeDateFilter=!activeDateFilter">{{(filter.date | date: 'MMM yyyy' )|| 'Archive'}} <span class="glyphicon pull-right" ng-class="{'glyphicon-menu-down':!activeDateFilter,'glyphicon-menu-up':activeDateFilter}"></span></a></h5>
+          <h5 class="caption"><a href ng-click="activeDateFilter=!activeDateFilter"><span class="glyphicon glyphicon-folder-open"></span>&nbsp; {{(filter.date | date: 'MMM yyyy' )|| 'Archive'}} <span class="glyphicon pull-right" ng-class="{'glyphicon-menu-down':!activeDateFilter,'glyphicon-menu-up':activeDateFilter}"></span></a></h5>
         </div>
         <div class="card-content" ng-show="activeDateFilter">
           <accordion close-others="true">

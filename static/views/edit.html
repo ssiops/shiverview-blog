@@ -65,12 +65,12 @@
       <div class="card">
         <div class="cover">
           <img alt="Label cover" ng-src="{{selectedLabels[selectedLabels.length].cover || '/blog/images/default-label.svg'}}">
-          <h5 class="caption"><a href ng-click="activeLabelSelect=!activeLabelSelect">Labels <span class="glyphicon pull-right" ng-class="{'glyphicon-menu-down':!activeLabelSelect,'glyphicon-menu-up':activeLabelSelect}"></span></a></h5>
+          <h5 class="caption"><a href ng-click="activeLabelSelect=!activeLabelSelect"><span class="glyphicon glyphicon-tag"></span>&nbsp; Labels <span class="glyphicon pull-right" ng-class="{'glyphicon-menu-down':!activeLabelSelect,'glyphicon-menu-up':activeLabelSelect}"></span></a></h5>
         </div>
         <div class="card-content" ng-show="activeLabelSelect">
           <ul class="list-group label-group">
             <li class="list-group-item" ng-repeat="label in labels">
-              <a href ng-style="label.style" ng-click="selectedLabels.push(label)" tooltip="{{label.desc || label.title}}" tooltip-placement="bottom">{{label.title}}</a>
+              <a href ng-style="label.style" ng-click="selectedLabels.push(label)" tooltip="{{label.desc || label.title}}" tooltip-placement="top">{{label.title}}</a>
               <button class="btn btn-link btn-xs pull-right" ng-style="label.style" ng-click="editLabel($index)"><span class="glyphicon glyphicon-pencil"></span></button>
             </li>
           </ul>
