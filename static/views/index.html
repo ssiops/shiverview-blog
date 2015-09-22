@@ -86,7 +86,9 @@
         </div>
         <div class="card-content" ng-show="activeLabelFilter">
           <ul class="list-group label-group">
-            <a href class="list-group-item" ng-repeat="label in labels" ng-style="label.style" ng-click="updateQuery({label:label.title})" tooltip="{{label.desc || label.title}}" tooltip-placement="top">{{label.title}}</a>
+            <li ng-repeat="label in labels" ng-style="label.style">
+              <a href ng-click="updateQuery({label:label.title})" tooltip="{{label.desc || label.title}}" tooltip-placement="top">{{label.title}}</a>
+            </li>
           </ul>
         </div>
       </div>
