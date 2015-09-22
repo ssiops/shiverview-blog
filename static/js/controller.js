@@ -2,7 +2,7 @@
 angular.module('shiverview')
 .controller('blogArchiveCtrl', ['$scope', '$http', '$routeParams', '$location', '$filter', '$rootScope', 'user', 'markdown', function ($scope, $http, $params, $location, $filter, $rootScope, user, markdown) {
   $scope.user = user.get();
-  if (typeof $scope.user.then === 'function')
+  if ($scope.user && typeof $scope.user.then === 'function')
     $scope.user.then(function () { $scope.user = user.get(); });
   $scope.articles = [];
   $scope.markdown = markdown;
